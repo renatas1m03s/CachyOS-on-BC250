@@ -1,6 +1,6 @@
 # Sobre
 Este documento tem como objetivo mostrar como ajustar ``MANUALMENTE`` uma instalação padrão do CachyOS para extrair o máximo de desempenho da placa AsRock BC-250.
-Um dos objetivos aqui é municiar alguém que foi atraído pelo linux por conta dessa plaquinha maravilhosa com mais controle e conhecimento sobre o que acontece "sob o capô".
+Um dos objetivos aqui é municiar de conhecimento alguém que foi atraído pelo linux por conta dessa plaquinha maravilhosa e que não quer executar simplesmente um conjunto de scripts sem saber o que está acontecendo "sob o capô".
 
 `Obs.: Existem vários scripts prontos, desenvolvidos por muita gente boa, que fazem todos esses passos de forma automática.`
 
@@ -33,7 +33,7 @@ Procedimentos atualizados para o dia `31/07/2026`
 - [Instalando ACPI Fix](#instalando-o-acpi-fix)
 - [Habilitandos as 40 unidades computacionais](#habilitandos-as-40-unidades-computacionais)
 - [Configurando a VRAM](#configurando-a-vram)
-- [Omitindo a mensagem RSEED no boot](#omitindo-a-mensagem-rseed-no-boot)
+- [Omitindo a mensagem RDSEED no boot](#omitindo-a-mensagem-rdseed-no-boot)
 - [Configurando o Overclock/Undervolt da GPU](#configurando-o-overclock/undervolt-da-gpu)
 - [Configurando o Overclock/Undervolt da CPU](#configurando-o-overclock/undervolt-da-cpu)
 - [Convertendo a zram para zswap](#convertendo-a-zram-para-zswap)
@@ -55,7 +55,7 @@ cd /tmp && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si 
 
 Obs1.: pacman, paru e yay aceitam os mesmos parâmetros e opções. Dois que eu costumo usar são `--noconfirm` (elimina a necessidade confirmação) e o `--needed` (se o componente/dependência já existir no ambiente ele não reinstala).
 
-Obs2.: Depois da instalação de algum deles podemos usá-los no lugar do pacman.
+Obs2.: Depois de instalar algum deles podemos usá-los no lugar do pacman.
 
 **Exemplo**
 ```
@@ -112,13 +112,14 @@ sudo nano /etc/mkinitcpio.conf
 ```
 localizar a linha que começa com **"HOOKS=(base... "** - linha que não começa com "#".
 Após o **fsck** adicionar **acpi_override** ficando **fsck acpi_override)**
-use a combinção de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano.
+
+Use a combinção de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano.
 
 **Gerando o initramfs novamente**
 ```
 sudo limine-update
 ```
-Reinicie o CachyOS e após isso a CPU conseguirá ficar em 800hz quando em iddle.
+Reinicie o CachyOS e após isso a CPU conseguirá ficar em 800 MHz quando em iddle.
 
 ## Habilitando as 40 unidades computacionais
 Assumindo que o umr já está instalado (vide tópico [Instalando as dependências/pré-requisitos](#instalando-as-dependências)) o procedimento para liberar as unidades computacionais adicionais é relativamente simples.
@@ -143,14 +144,117 @@ Uma vez o script estando em execução a sequência mais comum de procedimentos 
 
 Obs.: A versão do script de **30/07/2026** tem uma opção para habilitar os dois cores adicionais desabilitados de fábrica.
 
-**Referência** [WinnieLV/bc250-cu-live-manager#cpu-core-unlock](https://github.com/WinnieLV/bc250-cu-live-manager#cpu-core-unlock)
+**Referência:**
+
+[WinnieLV/bc250-cu-live-manager#cpu-core-unlock](https://github.com/WinnieLV/bc250-cu-live-manager#cpu-core-unlock)
 
 ## Configurando a VRAM
+Recentemente a atualização da BIOS para configurar a alocação dinâmica da VRAM deixou de ser necessária e isso pode ser conseguido com uma aplicação.
 
+Pessoalmente eu tenho conseguido bons resultados com a alocação imediata de 6GB e a possibilidade de alocar mais 5GB, totalizando 11GB de VRAM máxima. Pelas minhas observações quando você começa com a VRAM em 512MB ela "gasta" um tempinho requisitando da RAM e liberando a VRAM depois que ela não é mais necessária. No meu caso, os 6GB são um ponto de equilíbrio bom.
 
-## Omitindo a mensagem RSEED no boot
+Esse resultado pode ser obtido com a aplicação **bc250memcfg** e um parâmetro do kernel adicional no boot.
+
+Para alcançarmos essa combinação devemos seguir os seguintes passos:
+
+**Baixando a aplicação e descompactando na pasta ~/bc250**
+```
+cd ~/bc250 && wget https://github.com/fanoush/bc250_memcfg/releases/download/v0.1/bc250_memcfg.zip && unzip bc250_memcfg.zip && cd ~/bc250/bc250_memcfg
+```
+
+**Configurando o UMA_SIZE para 6144MB (6GB)**
+```
+sudo ./bc250memcfg UMA_SIZE 6144
+```
+
+**Configurando o parâmetro do kernel para alocar mais 5GB de VRAM se for necessário**
+
+O parâmetro em questão é o **ttm.pages_limit**.
+
+Para calcular o valor a ser passado para o **ttm.pages_limit** fazemos a seguinte conta:
+```
+Valor dinâmico possível x, no caso 5G
+((x * 1024) * 1024) / 4 
+((5 * 1024) * 1024) / 4 = 1310720
+```
+Após obter o valor a ser passado vamos configurar o limine para passar esse valor na inicialização do kernel
+```
+sudo nano /etc/default/limine
+```
+Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar **ttm.pages_limit=1310720** ao final.
+
+Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano
+
+`Obs.: O próximo passo (omitir a mensagem do RDSEED) também envolve passar um parâmetro para o kernel, por isso, se quiser otimizar as atividades, mantenha o arquivo aberto no nano e pule para a próxima etapa.`
+
+**Após isso atualizar o bootloader com o comando:**
+```
+sudo limine-update
+```
+Reinicie o CachyOS e sua VRAM estará configurada para 6GB e podendo chegar a 11GB.
+
+**Referências:**
+
+[AMD BC250 Documentation/VRAM Configuration Guide](https://elektricm.github.io/amd-bc250-docs/bios/vram/)
+
+[fanoush/bc250_memcfg](https://github.com/fanoush/bc250_memcfg)
+
+## Omitindo a mensagem RDSEED no boot
+Os processadores baseados na APU Cyan Skillfish (Zen 2) não são compatíveis com a instrução RDSEED e no boot do linux aparece uma mensagem informando que isso está sendo desabilitado. Não há qualquer problema nessa mensagem e isso não tem maiores efeitos além dos estéticos.
+
+Apesar de atualmente não gerar qualquer problema, além do incômodo estético, é possível omitir essa mensagem no boot, bastando para isso adicionar mais um parâmetro ao kernel.
+
+**Novamente vamos editar as opções de boot do limine**
+```
+sudo nano /etc/default/limine
+```
+Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar depois de **quiet** o parâmetro **loglevel=0**
+
+Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano
+
+`Obs.: O próximo passo (omitir a mensagem do RDSEED) também envolve passar um parâmetro para o kernel, por isso, se quiser otimizar as atividades, mantenha o arquivo aberto no nano e pule para a próxima etapa.`
+
+**Após isso atualizar o bootloader com o comando:**
+```
+sudo limine-update
+```
 
 ## Configurando o Overclock/Undervolt da GPU
+Por padrão a GPU da BC-250 opera em 1500 MHz constantes e isso não é eficiente em consumo, além de limitar o potencial dessa plaquinha tão maravilhosa.
+
+Essa operação padrão pode ser subvertida com a instalação do **Cyan Skillfish GPU Governor** habilitando frequências de 350 MHz até 2230 MHz e é esse o próximo passo da nossa jornada.
+
+`Obs.: Frequências de 350 MHz só são possíveis com um kernel com patch aplicado e isso já é padrão no CachyOS e no Arch Linux`
+
+**Primeiro passo é instalação do serviço**
+```
+yay -S --noconfirm --needed cyan-skillfish-governor-smu
+```
+Durante a instalação o serviço criará um arquivo de configuração **(config.toml)** na pasta **/etc/cyan-skillfish-governor-smu**
+
+Esse arquivo virá configurado com parâmetros seguros de operação variando a frequência de **1000 MHz** a **1850 Mhz**.
+
+Para testar a estabilidade a sugestão é iniciar o serviço sem habilitá-lo, ou seja, se ocorrer alguma instabilidade, com um simples reboot a placa voltará para a operação padrão a 1500 MHz.
+
+**Iniciando o serviço e verificando a estabilidade**
+```
+sudo systemctl start cyan-skillfish-governor-smu
+```
+Após iniciar o serviço é recomendado executar algum benchmark da GPU para verificar a estabilidade. Sugestão, testar com o [Unigine Superposition](https://benchmark.unigine.com/superposition)
+
+Confirmada a estabilidade, pode-se habilitar o serviço para iniciar com o boot do sistema.
+
+**Habilitando o GPU Governor para iniciar com o boot**
+```
+sudo systemctl enable cyan-skillfish-governor-smu
+```
+
+Com o tempo pode-se brincar com as frequências e voltagens, para isso recomendo a leitura da documentação do desenvolvedor.
+
+**Referência:**
+
+[filippor/cyan-skillfish-governor](https://github.com/filippor/cyan-skillfish-governor)
+
 
 ## Configurando o Overclock/Undervolt da CPU
 

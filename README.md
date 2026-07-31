@@ -28,9 +28,9 @@ Procedimentos atualizados para o dia `31/07/2026`
 
 ## Tópicos abordados
 
-- [Instalando o yay ou o paru](#Instalando o yay ou o paru)
-- [Instalando as dependências/pré-requisitos](#Instalando as dependências)
-- [Instalando ACPI Fix](#Instalando o ACPI Fix)
+- [Instalando o yay ou o paru](#instalando-o-yay-ou-o-paru)
+- [Instalando as dependências/pré-requisitos](#instalando-as-dependências)
+- [Instalando ACPI Fix](#instalando-o-acpi-fix)
 - [Habilitandos as 40 unidades computacionais](#Habilitandos as 40 unidades computacionais)
 - [Configurando a VRAM](#Configurando a VRAM)
 - [Omitindo a mensagem RSEED no boot](#Omitindo a mensagem RSEED no boot)

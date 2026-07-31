@@ -54,6 +54,7 @@ cd /tmp && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si 
 ```
 
 Obs1.: pacman, paru e yay aceitam os mesmos parâmetros e opções. Dois que eu costumo usar são `--noconfirm` (elimina a necessidade confirmação) e o `--needed` (se o componente/dependência já existir no ambiente ele não reinstala).
+
 Obs2.: Depois da instalação de algum deles podemos usá-los no lugar do pacman.
 
 **Exemplo**
@@ -77,19 +78,19 @@ yay -S --noconfirm --needed rocm-smi-lib stress umr
 
 ## Instalando o ACPI Fix
 
-Por padrão o CachyOS ou o Arch Linux não conseguem enxergar todos os estados da CPU e por isso o funcionamento fica prejudicado pois, principalmente em idle, as frequências possíveis não são alcançadas. Para corrigir isso é necessário um sobrescrever (override) as instruções padrão do ACPI. Esse procedimento é o que está descrito a seguir.
+Por padrão o CachyOS ou o Arch Linux não conseguem enxergar todos os estados da CPU e por isso o funcionamento fica prejudicado, pois, principalmente em idle, as frequências possíveis não são alcançadas. Para corrigir isso é necessário um sobrescrever (override) as instruções padrão do ACPI. Esse procedimento é o que está descrito a seguir.
 
-No linux existem muitas formas de se alcançar um mesmo resultado e algumas vezes a escolha é baseada única e exclusivamente na preferência pessoal. A seguir o método que eu acho mais simples para se aplicar o fix do `ACPI`.
+Obs1.: No linux existem muitas formas de se alcançar um mesmo resultado e algumas vezes a escolha é baseada única e exclusivamente na preferência pessoal. A seguir o método que eu acho mais simples para se aplicar o fix do `ACPI`.
 
-Para ficar organizado eu gosto de concentrar todos os scripts e apps relacionados a BC-250 em uma pasta no meu `home` chamada `bc250`.
+Obs2.: Para ficar organizado eu gosto de concentrar todos os scripts e apps relacionados a BC-250 em uma pasta no meu `home` chamada `bc250`.
 
 **Comandos para criar e acessar uma pasta no home do usuário chamada bc250**
 ```
 mkdir -pv ~/bc250/acpi-fix && cd ~/bc250
 ```
-`Obs.: O comando mkdir cria a pasta (abreviação para make directory) e o comando cd (abreviação de change directory) vai para a pasta criada, além disso o "&&" permite encadear mais de um comando e basicamente significa que quando terminar de executar o mkdir, se ele terminar com sucesso, executar o cd.`
+`Obs.: O comando mkdir (abreviação para make directory) cria a pasta e o comando cd (abreviação de change directory) vai para a pasta criada, além disso o "&&" permite encadear mais de um comando e basicamente significa que quando terminar de executar o mkdir, se ele terminar com sucesso, executar o cd.`
 
-Obs.: No linux o "~" é um alias para o home do usuário. Ex. um usuário de nome palmeiras teria o home igual a "/home/palmeiras", nesse caso "~" = "/home/palmeiras"
+Obs.: No linux o "\~" é um alias para o home do usuário. Ex. um usuário de nome palmeiras teria o home igual a "/home/palmeiras", nesse caso "\~" = "/home/palmeiras"
 
 **Comando para baixar o fix do github** 
 

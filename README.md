@@ -1,14 +1,14 @@
 # Sobre
-Este documento tem como objetivo mostrar como ajustar ``MANUALMENTE`` uma configuração padrão do CachyOS para extrair o máximo de desempenho da placa AsRock BC-250.
+Este documento tem como objetivo mostrar como ajustar ``MANUALMENTE`` uma instalação padrão do CachyOS para extrair o máximo de desempenho da placa AsRock BC-250.
 Um dos objetivos aqui é municiar alguém que foi atraído pelo linux por conta dessa plaquinha maravilhosa com mais controle e conhecimento sobre o que acontece "sob o capô".
 
 `Obs.: Existem vários scripts prontos, desenvolvidos por muita gente boa, que fazem todos esses passos de forma automática.`
 
-A demonstração e explicação de cada um desses pontos pode ser assistida nesse link [Setup MANUAL do CachyOS/Arch na BC-250](https://www.youtube.com/)
+Um vídeo com a demonstração e explicação de cada um dos pontos deste documento pode ser assistido nesse link [Setup MANUAL do CachyOS/Arch na BC-250](https://www.youtube.com/)
 
 # Importante
 
-A comunidade em torno da BC-250 é extremamente unida e produtiva e alguns passos descritos aqui podem se tornar obsoletos muito rapidamente. Portanto, lembre-se sempre de consultar a página [AMD BC250 Documentation](https://elektricm.github.io/amd-bc250-docs/)
+A comunidade em torno da BC-250 é extremamente unida e produtiva e alguns passos descritos aqui podem se tornar obsoletos muito rapidamente, portanto lembre-se sempre de consultar a página [AMD BC250 Documentation](https://elektricm.github.io/amd-bc250-docs/)
 
 Procedimentos atualizados para o dia `31/07/2026`
 
@@ -31,16 +31,16 @@ Procedimentos atualizados para o dia `31/07/2026`
 - [Instalando o yay ou o paru](#instalando-o-yay-ou-o-paru)
 - [Instalando as dependências/pré-requisitos](#instalando-as-dependências)
 - [Instalando ACPI Fix](#instalando-o-acpi-fix)
-- [Habilitandos as 40 unidades computacionais](#Habilitandos as 40 unidades computacionais)
-- [Configurando a VRAM](#Configurando a VRAM)
-- [Omitindo a mensagem RSEED no boot](#Omitindo a mensagem RSEED no boot)
-- [Configurando o Overclock/Undervolt da GPU](#Configurando o Overclock/Undervolt da GPU)
-- [Configurando o Overclock/Undervolt da CPU](#Configurando o Overclock/Undervolt da CPU)
-- [Convertendo a zram para zswap](#Convertendo a zram para zswap)
-- [Habilitando entrada automática no modo gaming](#Habilitando entrada automática no modo gaming)
+- [Habilitandos as 40 unidades computacionais](#habilitandos-as-40-unidades-computacionais)
+- [Configurando a VRAM](#configurando-a-vram)
+- [Omitindo a mensagem RSEED no boot](#omitindo-a-mensagem-rseed-no-boot)
+- [Configurando o Overclock/Undervolt da GPU](#configurando-o-overclock/undervolt-da-gpu)
+- [Configurando o Overclock/Undervolt da CPU](#configurando-o-overclock/undervolt-da-cpu)
+- [Convertendo a zram para zswap](#convertendo-a-zram-para-zswap)
+- [Habilitando entrada automática no modo gaming](#habilitando-entrada-automática-no-modo-gaming)
 
 ## Instalando o yay ou o paru
-O gerenciador oficial de pacotes do CachyOS e do Arch é o pacman, mas para poder acessar os pacotes do AUR existem algumas ferramentas, como por exemplo o `paru` e `yay`.
+O gerenciador oficial de pacotes do CachyOS e do Arch é o pacman, mas para poder acessar os pacotes do AUR existem algumas ferramentas, como por exemplo o `paru` e `yay`, que podem susbtituir o pacman.
 Pessoalmente eu prefiro a forma como o `yay` trabalha, mas o resultado de ambos é o mesmo. Nesse tópico eu mostro como instalar ambos.
 
 **Paru**
@@ -53,21 +53,99 @@ sudo pacman -S paru
 cd /tmp && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si --noconfirm
 ```
 
-Obs.: pacman, paru e yay aceitam os mesmos parâmetros e opções. Dois que eu costumo usar são `--noconfirm` (elimina a necessidade confirmação) e o `--needed` (se o componente/dependência já existir no ambiente ele não reinstala).
+Obs1.: pacman, paru e yay aceitam os mesmos parâmetros e opções. Dois que eu costumo usar são `--noconfirm` (elimina a necessidade confirmação) e o `--needed` (se o componente/dependência já existir no ambiente ele não reinstala).
+Obs2.: Depois da instalação de algum deles podemos usá-los no lugar do pacman.
 
 **Exemplo**
 ```
 sudo pacman -S --noconfirm --needed paru
 ```
 
-
 ## Instalando as dependências/pré-requisitos
+Alguns dos próximos passos necessitam da instalação de pré-requisitos, são eles:
+
+- **rocm-smi-lib** que habilita o btop ler as informações da GPU;
+- **stress** necessário para o procedimento de overclock/undervolt da CPU;
+- **umr** necessário para o script que libera as unidades computacionais (CUs) adicionais.
+
+Podemos fazer tudo em uma linha de comando única:
+```
+yay -S --noconfirm --needed rocm-smi-lib stress umr
+```
+
+`Obs: Não se usa o sudo antes do yay ou do paru - Como eles invocam o pacman, no momento certo a senha será solicitada.`
 
 ## Instalando o ACPI Fix
 
+Por padrão o CachyOS ou o Arch Linux não conseguem enxergar todos os estados da CPU e por isso o funcionamento fica prejudicado pois, principalmente em idle, as frequências possíveis não são alcançadas. Para corrigir isso é necessário um sobrescrever (override) as instruções padrão do ACPI. Esse procedimento é o que está descrito a seguir.
+
+No linux existem muitas formas de se alcançar um mesmo resultado e algumas vezes a escolha é baseada única e exclusivamente na preferência pessoal. A seguir o método que eu acho mais simples para se aplicar o fix do `ACPI`.
+
+Para ficar organizado eu gosto de concentrar todos os scripts e apps relacionados a BC-250 em uma pasta no meu `home` chamada `bc250`.
+
+**Comandos para criar e acessar uma pasta no home do usuário chamada bc250**
+```
+mkdir -pv ~/bc250/acpi-fix && cd ~/bc250
+```
+`Obs.: O comando mkdir cria a pasta (abreviação para make directory) e o comando cd (abreviação de change directory) vai para a pasta criada, além disso o "&&" permite encadear mais de um comando e basicamente significa que quando terminar de executar o mkdir, se ele terminar com sucesso, executar o cd.`
+
+Obs.: No linux o "~" é um alias para o home do usuário. Ex. um usuário de nome palmeiras teria o home igual a "/home/palmeiras", nesse caso "~" = "/home/palmeiras"
+
+**Comando para baixar o fix do github** 
+
+Se já tiver atualizado a **BIOS para 8 cores**: 
+```
+git clone https://github.com/mendesrr/bc250-acpi-fix-updated-8c ~/bc250/acpi-fix
+```
+Se ainda estiver na **BIOS com 6 cores**:
+```
+git clone https://github.com/bc250-collective/bc250-acpi-fix ~/bc250/acpi-fix
+```
+**Criando uma pasta no /etc para receber o fix e o copiando para lá** 
+```
+sudo mkdir -pv /etc/initcpio/acpi_override && sudo cp -v ~/bc250/acpi-fix/*.aml /etc/initcpio/acpi_override
+```
+**Editando o arquivo mkinitcpio.conf para adicionar um HOOK no initramfs**
+```
+sudo nano /etc/mkinitcpio.conf
+```
+localizar a linha que começa com **"HOOKS=(base... "** - linha que não começa com "#".
+Após o **fsck** adicionar **acpi_override** ficando **fsck acpi_override)**
+use a combinção de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano.
+
+**Gerando o initramfs novamente**
+```
+sudo limine-update
+```
+Reinicie o CachyOS e após isso a CPU conseguirá ficar em 800hz quando em iddle.
+
 ## Habilitando as 40 unidades computacionais
+Assumindo que o umr já está instalado (vide tópico [Instalando as dependências/pré-requisitos](#instalando-as-dependências)) o procedimento para liberar as unidades computacionais adicionais é relativamente simples.
+
+**Baixando o script que libera as unidade computacionais adicionais**
+```
+cd ~/bc250 && curl -L -o bc250-cu-live-manager.sh https://raw.githubusercontent.com/WinnieLV/bc250-cu-live-manager/refs/heads/main/bc250-cu-live-manager.sh
+```
+**Executando o script**
+```
+sudo ~/bc250/bc250-cu-live-manager.sh
+```
+Uma vez o script estando em execução a sequência mais comum de procedimentos é: 
+
+- tecla "f" para habilitar os 40 CUs;
+
+- tecla "i" para instalar o serviço;
+
+- tecla "w" para escrever a tabela com os CUs adicionais habilitados;
+
+- tecla "q" para encerrar o script.
+
+Obs.: A versão do script de **30/07/2026** tem uma opção para habilitar os dois cores adicionais desabilitados de fábrica.
+
+**Referência** [WinnieLV/bc250-cu-live-manager#cpu-core-unlock](https://github.com/WinnieLV/bc250-cu-live-manager#cpu-core-unlock)
 
 ## Configurando a VRAM
+
 
 ## Omitindo a mensagem RSEED no boot
 

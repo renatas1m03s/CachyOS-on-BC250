@@ -66,10 +66,10 @@ sudo pacman -S --noconfirm --needed paru
 ## Instalando as dependências e pré-requisitos
 Alguns dos próximos passos necessitam da instalação de pré-requisitos, são eles:
 
-- **rocm-smi-lib** que habilita o btop ler as informações da GPU;
-- **stress** necessário para o procedimento de overclock/undervolt da CPU;
-- **umr** necessário para o script que libera as unidades computacionais (CUs) adicionais.
-- **python-pipx** será usado para configurar o overclock da CPU
+- **rocm-smi-lib** - habilita o btop ler as informações da GPU;
+- **stress** - necessário para o procedimento de overclock/undervolt da CPU;
+- **umr** - necessário para o script que libera as unidades computacionais (CUs) adicionais.
+- **python-pipx** - será usado para configurar o overclock da CPU
 
 Podemos fazer tudo em uma linha de comando única:
 ```
@@ -90,17 +90,17 @@ Obs2.: Para ficar organizado eu gosto de concentrar todos os scripts e apps rela
 ```
 mkdir -pv ~/bc250/acpi-fix && cd ~/bc250
 ```
-`Obs.: O comando mkdir (abreviação para make directory) cria a pasta e o comando cd (abreviação de change directory) vai para a pasta criada, além disso o "&&" permite encadear mais de um comando e basicamente significa que quando terminar de executar o mkdir, se ele terminar com sucesso, executar o cd.`
+`Obs1.: O comando mkdir (abreviação para make directory) cria a pasta e o comando cd (abreviação de change directory) vai para a pasta criada, além disso o "&&" permite encadear mais de um comando e basicamente significa que quando terminar de executar o mkdir, se ele terminar com sucesso, executa o cd.`
 
-Obs.: No linux o "\~" é um alias para o home do usuário. Ex. um usuário de nome palmeiras teria o home igual a "/home/palmeiras", nesse caso "\~" = "/home/palmeiras"
+`Obs2.: No linux o "\~" é um alias para o home do usuário. Ex. um usuário de nome palmeiras teria o home igual a "/home/palmeiras", nesse caso "\~" = "/home/palmeiras"`
 
 **Comando para baixar o fix do github** 
 
-Se já tiver atualizado a **BIOS para 8 cores**: 
+**Fix para quando a BIOS estiver atualizada para habilitar os 8 cores**
 ```
 git clone https://github.com/mendesrr/bc250-acpi-fix-updated-8c ~/bc250/acpi-fix
 ```
-Se ainda estiver na **BIOS com 6 cores**:
+**Fix para a BIOS original ou autalizada, mas somente com 6 cores**
 ```
 git clone https://github.com/bc250-collective/bc250-acpi-fix ~/bc250/acpi-fix
 ```
@@ -112,12 +112,22 @@ sudo mkdir -pv /etc/initcpio/acpi_override && sudo cp -v ~/bc250/acpi-fix/*.aml 
 ```
 sudo nano /etc/mkinitcpio.conf
 ```
-localizar a linha que começa com **"HOOKS=(base... "** - linha que não começa com "#".
-Após o **fsck** adicionar **acpi_override** ficando **fsck acpi_override)**
+localizar uma linha parecida com:
 
-Use a combinção de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano.
+**HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block filesystems fsck)**
 
-**Gerando o initramfs novamente**
+Observar que existem várias linhas parecidas com ela, mas somente uma sem o **"#"** na frente, essa é a que iremos modificar.
+
+Acrescentar o parâmetro **acpi_override** logo após o **fsck**, deixando a linha similar a:
+
+**HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block filesystems fsck acpi_override)**
+
+`Obs.: Os parâmetros contidos entre os parênteses podem variar de sistema para sistema, tome cuidado para a única alteração realizada ser o acréscimo do acpi_override.`
+
+
+Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano.
+
+**Gere o initramfs novamente**
 ```
 sudo limine-update
 ```
@@ -206,15 +216,18 @@ Os processadores baseados na APU Cyan Skillfish (Zen 2) não são compatíveis c
 
 Apesar de atualmente não gerar qualquer problema, além do incômodo estético, é possível omitir essa mensagem no boot, bastando para isso adicionar mais um parâmetro ao kernel.
 
+Aproveitando o momento de editar os parâmetros de boot para incluir o mitigations=off que melhora o desempenho em algumas situações relacionadas a jogos
+
 **Novamente vamos editar as opções de boot do limine**
 ```
 sudo nano /etc/default/limine
 ```
-Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar depois de **quiet** o parâmetro **loglevel=0**
+Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar depois de **quiet** os parâmetros
+```
+loglevel=0 mitigations=off
+```
 
 Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano
-
-`Obs.: O próximo passo (omitir a mensagem do RDSEED) também envolve passar um parâmetro para o kernel, por isso, se quiser otimizar as atividades, mantenha o arquivo aberto no nano e pule para a próxima etapa.`
 
 **Após isso atualizar o bootloader com o comando:**
 ```
@@ -289,6 +302,59 @@ O comando acima instala o serviço **bc250-smu-oc** e logo após o habilita.
 
 Obs.: Existe um parâmetro para o **bc250_detect.py** que é o **"--keep"** que após o script terminar os parâmetros do teste permanecem aplicados até o reboot.
 
-## Convertendo a zram para zswap
+**Referência:**
 
-## Habilitando entrada automática no modo gaming
+[bc250_smu_oc](https://github.com/bc250-collective/bc250_smu_oc)
+
+## Convertendo a zram para zswap
+O CachyOS, como muitos sistemas modernos, usa o swap em RAM, mas em um sistema com somente 16GB que é compartilhado com a GPU isso acaba custando muito caro e gerando problemas, por isso, a recomendação é converter a **ZRAM** em **ZSWAP**
+
+Os passos a seguir devem ser executados com cuidado.
+
+**Editar o arquivo mkinitcpio.conf e adicionar o módulo de compressão do swap**
+```
+sudo nano /etc/mkinitcpio.conf
+``` 
+Procurar a linha:
+
+**MODULES=()**
+
+Alterá-la para:
+
+**MODULES=(lz4)**
+
+Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano.
+
+**Adicionar mais um parâmetro ao kernel no limine**
+```
+sudo nano /etc/default/limine
+```
+Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar ao final dela:
+```
+systemd.zram=0 zswap.enabled=1 zswap.shrinker_enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=30
+```
+Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano.
+
+**Após isso atualizar o bootloader e o initramfs com o comando:**
+```
+sudo limine-update
+```
+
+**Execute a seguinte sequência de comandos UM POR UM e tendo a certeza que o último concluiu sem erros**
+```
+sudo touch /etc/udev/rules.d/30-zram.rules
+
+sudo btrfs subvolume create /swap
+
+sudo btrfs filesystem mkswapfile --size 8g --uuid clear /swap/swapfile
+
+sudo swapon /swap/swapfile
+
+sudo bash
+
+echo "/swap/swapfile none swap defaults 0 0" | sudo tee -a /etc/fstab
+```
+Reinicie o CachyOS e a troca para ZSWAP estará concluída
+
+## Conclusão
+A maior parte desses procedimentos é válida para o Arch Linux, bastando as premissas do Limine e do BTRFS estarem atendidas.

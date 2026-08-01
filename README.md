@@ -197,7 +197,10 @@ Após obter o valor a ser passado vamos configurar o limine para passar esse val
 ```
 sudo nano /etc/default/limine
 ```
-Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar **ttm.pages_limit=1310720** ao final.
+Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar ao final antes das aspas duplas.
+```
+ttm.pages_limit=1310720
+```
 
 Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano
 
@@ -230,6 +233,9 @@ Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar depois de **quiet** 
 ```
 loglevel=0 mitigations=off
 ```
+O resultado ficará algo parecido com a linha a seguir:
+
+**KERNEL_CMDLINE[default]+="quiet loglevel=0 mitigations=off nowatchdog splash...**
 
 Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano
 
@@ -282,7 +288,7 @@ Para habilitar o overclock/unvervolt via SMU existe uma ferramenta chamada **bc2
 
 A seguir temos os passos para configurar essas possibilidades.
 
-** Fazendo o download e ativando o bc250_smu_oc**
+**Fazendo o download e ativando o bc250_smu_oc**
 ```
 cd ~/bc250 && git clone https://github.com/bc250-collective/bc250_smu_oc.git && cd ~/bc250/bc250_smu_oc && pipx install . && chmod +x *.py
 ```
@@ -302,7 +308,7 @@ O script terminando com sucesso ele gera um arquivo na mesma pasta chamado **ove
 ```
 sudo ./bc250_apply.py --install overclock.conf && sudo systemctl enable --now bc250-smu-oc
 ```
-O comando acima instala o serviço **bc250-smu-oc** e logo após o habilita.
+A dupla de comandos acima instalam e habilitam o serviço **bc250-smu-oc**.
 
 Obs.: Existe um parâmetro para o **bc250_detect.py** que é o **"--keep"** que após o script terminar os parâmetros do teste permanecem aplicados até o reboot.
 
@@ -311,7 +317,7 @@ Obs.: Existe um parâmetro para o **bc250_detect.py** que é o **"--keep"** que 
 [bc250-collective/bc250_smu_oc](https://github.com/bc250-collective/bc250_smu_oc)
 
 ## Convertendo a zram para zswap
-O CachyOS, como muitos sistemas modernos, usa o swap em RAM, mas em um sistema com somente 16GB que é compartilhado com a GPU isso acaba custando muito caro e gerando problemas, por isso, a recomendação é converter a **ZRAM** em **ZSWAP**
+O CachyOS, como muitos sistemas modernos, usa o swap em RAM, mas em um sistema com somente 16GB, compartilhado com a GPU, isso tem um custo muito alto e pode gerar problemas, por isso a recomendação é converter a **ZRAM** em **ZSWAP**
 
 Os passos a seguir devem ser executados com cuidado.
 
@@ -344,7 +350,7 @@ Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** p
 sudo limine-update
 ```
 
-**Execute a seguinte sequência de comandos UM POR UM e tendo a certeza que o último concluiu sem erros**
+**Execute a seguinte sequência de comandos UM POR UM, só passando ao próximo se o anterior executar sem erros**
 ```
 sudo touch /etc/udev/rules.d/30-zram.rules
 

@@ -17,7 +17,7 @@ Procedimentos correntes em `31/07/2026`
 - Sistema Operacional: **Linux CachyOS com KDE/Plasma**
 - Sitemas de arquivos: **BTRFS**
 - Bootloader: **Limine**
-- Não é necessário ter atualizado a BIOS, mas não interfere se o tiver feito, além disso,  a BIOS que libera 2 cores e 4 threads a mais é totalmente compatível com esses procedimentos.
+- Não é necessário ter atualizado a BIOS, mas não interfere se o tiver feito, além disso  a BIOS que libera 2 cores e 4 threads é totalmente compatível com esses procedimentos.
 - Instalação limpa do Linux CachyOS sem ter executado nenhum dos scripts automatizados
 - Usuário com privilégio de sudo
 
@@ -41,7 +41,9 @@ Procedimentos correntes em `31/07/2026`
 
 ## Instalando o yay ou o paru
 O gerenciador oficial de pacotes do CachyOS e do Arch é o pacman, mas para poder acessar os pacotes do AUR existem algumas ferramentas, como por exemplo o `paru` e `yay`, que podem susbtituir o pacman.
-Pessoalmente eu prefiro a forma como o `yay` trabalha, mas o resultado de ambos é o mesmo. Nesse tópico eu mostro como instalar ambos.
+Pessoalmente eu prefiro a forma como o `yay` trabalha, mas o resultado de ambos é o mesmo.
+
+Nesse tópico eu mostro como instalar ambos.
 
 **Paru**
 ```
@@ -79,19 +81,21 @@ yay -S --noconfirm --needed rocm-smi-lib stress umr python-pipx
 
 ## Instalando o ACPI Fix
 
-Por padrão o CachyOS ou o Arch Linux não conseguem enxergar todos os estados da CPU e por isso o funcionamento fica prejudicado, pois, principalmente em idle, as frequências possíveis não são alcançadas. Para corrigir isso é necessário um sobrescrever (override) as instruções padrão do ACPI. Esse procedimento é o que está descrito a seguir.
+Por padrão o CachyOS ou o Arch Linux não conseguem enxergar todos os estados da CPU da BC-250 e por isso o funcionamento fica prejudicado, pois, principalmente em idle, as frequências possíveis não são alcançadas. Para corrigir isso é necessário sobrescrever (override) as instruções padrão do ACPI.
+
+Esse procedimento é o que está descrito a seguir.
 
 Obs1.: No linux existem muitas formas de se alcançar um mesmo resultado e algumas vezes a escolha é baseada única e exclusivamente na preferência pessoal. A seguir o método que eu acho mais simples para se aplicar o fix do `ACPI`.
 
 Obs2.: Para ficar organizado eu gosto de concentrar todos os scripts e apps relacionados a BC-250 em uma pasta no meu `home` chamada `bc250`.
 
-**Comandos para criar e acessar uma pasta no home do usuário chamada bc250**
+**Comandos para criar a pasta bc250 no home do usuário**
 ```
 mkdir -pv ~/bc250/acpi-fix && cd ~/bc250
 ```
-`Obs1.: O comando mkdir (abreviação para make directory) cria a pasta e o comando cd (abreviação de change directory) vai para a pasta criada, além disso o "&&" permite encadear mais de um comando e basicamente significa que quando terminar de executar o mkdir, se ele terminar com sucesso, executa o cd.`
+Obs1.: O comando mkdir (abreviação para make directory) cria a pasta e o comando cd (abreviação de change directory) vai para a pasta criada, além disso o "&&" permite encadear mais de um comando e basicamente significa que quando terminar de executar o mkdir, se ele terminar com sucesso, executa o cd.
 
-`Obs2.: No linux o "\~" é um alias para o home do usuário. Ex. um usuário de nome palmeiras teria o home igual a "/home/palmeiras", nesse caso "\~" = "/home/palmeiras"`
+Obs2.: No linux o \~ é um alias para o home do usuário. Ex. um usuário de nome palmeiras teria o home igual a /home/palmeiras, nesse caso "\~" = /home/palmeiras
 
 **Comando para baixar o fix do github** 
 

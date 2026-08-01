@@ -38,7 +38,6 @@ Procedimentos correntes em `31/07/2026`
 - [Overclock na GPU](#overclock-na-gpu)
 - [Overclock na CPU](#overclock-na-cpu)
 - [Convertendo a zram para zswap](#convertendo-a-zram-para-zswap)
-- [Habilitando entrada automática no modo gaming](#habilitando-entrada-automática-no-modo-gaming)
 
 ## Instalando o yay ou o paru
 O gerenciador oficial de pacotes do CachyOS e do Arch é o pacman, mas para poder acessar os pacotes do AUR existem algumas ferramentas, como por exemplo o `paru` e `yay`, que podem susbtituir o pacman.
@@ -138,7 +137,7 @@ Assumindo que o **umr** já está instalado (vide tópico [Instalando as depend�
 
 **Baixando o script que libera as unidade computacionais adicionais**
 ```
-cd ~/bc250 && curl -L -o bc250-cu-live-manager.sh https://raw.githubusercontent.com/WinnieLV/bc250-cu-live-manager/refs/heads/main/bc250-cu-live-manager.sh
+cd ~/bc250 && curl -L -o bc250-cu-live-manager.sh https://raw.githubusercontent.com/WinnieLV/bc250-cu-live-manager/refs/heads/main/bc250-cu-live-manager.sh && chmod +x bc250-cu-live-manager.sh
 ```
 **Executando o script**
 ```
@@ -296,7 +295,7 @@ O script terminando com sucesso ele gera um arquivo na mesma pasta chamado **ove
 
 **Tornando os resultados dos testes acima permanente**
 ```
-sudo ./bc250_apply install overclock.conf && sudo systemctl enable --now bc250-smu-oc
+sudo ./bc250_apply.py --install overclock.conf && sudo systemctl enable --now bc250-smu-oc
 ```
 O comando acima instala o serviço **bc250-smu-oc** e logo após o habilita.
 
@@ -349,8 +348,6 @@ sudo btrfs subvolume create /swap
 sudo btrfs filesystem mkswapfile --size 8g --uuid clear /swap/swapfile
 
 sudo swapon /swap/swapfile
-
-sudo bash
 
 echo "/swap/swapfile none swap defaults 0 0" | sudo tee -a /etc/fstab
 ```

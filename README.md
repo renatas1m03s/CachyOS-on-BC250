@@ -201,10 +201,9 @@ Localizar a linha **"KERNEL_CMDLINE[default]"** e adicionar ao final antes das a
 ```
 ttm.pages_limit=1310720
 ```
+`Obs.: O próximo passo (omitir a mensagem do RDSEED) também envolve passar um parâmetro para o kernel, por isso, se quiser otimizar as atividades, mantenha o arquivo aberto no nano e pule para a próxima etapa.`
 
 Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano
-
-`Obs.: O próximo passo (omitir a mensagem do RDSEED) também envolve passar um parâmetro para o kernel, por isso, se quiser otimizar as atividades, mantenha o arquivo aberto no nano e pule para a próxima etapa.`
 
 **Após isso atualizar o bootloader com o comando:**
 ```

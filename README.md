@@ -3,7 +3,7 @@ Este documento tem como objetivo mostrar como ajustar ``MANUALMENTE`` uma instal
 
 Um dos objetivos aqui é municiar de conhecimento alguém que por conta dessa plaquinha maravilhosa, foi atraído pelo linux,  mas que não quer executar simplesmente um conjunto de scripts sem saber o que está acontecendo "sob o capô".
 
-`Obs.: Existem vários scripts prontos, desenvolvidos por muita gente boa, que fazem todos esses passos de forma automática.`
+`Obs.: Existem vários scripts prontos, desenvolvidos por muita gente boa, que executam todos esses passos de forma automática.`
 
 Um vídeo com a demonstração e explicação de cada um dos pontos deste documento pode ser assistido nesse link [Setup MANUAL do CachyOS/Arch na BC-250](https://www.youtube.com/)
 
@@ -308,7 +308,7 @@ Obs.: Existe um parâmetro para o **bc250_detect.py** que é o **"--keep"** que 
 
 **Referência:**
 
-[bc250_smu_oc](https://github.com/bc250-collective/bc250_smu_oc)
+[bc250-collective/bc250_smu_oc](https://github.com/bc250-collective/bc250_smu_oc)
 
 ## Convertendo a zram para zswap
 O CachyOS, como muitos sistemas modernos, usa o swap em RAM, mas em um sistema com somente 16GB que é compartilhado com a GPU isso acaba custando muito caro e gerando problemas, por isso, a recomendação é converter a **ZRAM** em **ZSWAP**

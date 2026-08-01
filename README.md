@@ -99,7 +99,7 @@ Obs2.: No linux o \~ é um alias para o home do usuário.
 
 Ex. um usuário de nome palmeiras teria o home igual a /home/palmeiras, nesse caso ~ = /home/palmeiras
 
-**Comando para baixar o fix do github** 
+### ATENÇÃO: Existem dois ACPI Fix - Um para BIOS com 8 cores e o outro para BIOS com 6 cores.
 
 **Fix para quando a BIOS estiver atualizada para habilitar os 8 cores**
 ```

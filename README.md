@@ -358,6 +358,8 @@ echo "/swap/swapfile none swap defaults 0 0" | sudo tee -a /etc/fstab
 ```
 Reinicie o CachyOS e a troca para ZSWAP estará concluída
 
+**Referência:**
+
 [CachyOS Wiki - Mudar de ZRam para Zswap](https://wiki.cachyos.org/pt/configuration/general_system_tweaks/#mudar-de-zram-para-zswap)
 
 ## Conclusão

@@ -1,6 +1,7 @@
 # Sobre
 Este documento tem como objetivo mostrar como ajustar ``MANUALMENTE`` uma instalação padrão do CachyOS para extrair o máximo de desempenho da placa AsRock BC-250.
-Um dos objetivos aqui é municiar de conhecimento alguém que foi atraído pelo linux por conta dessa plaquinha maravilhosa e que não quer executar simplesmente um conjunto de scripts sem saber o que está acontecendo "sob o capô".
+
+Um dos objetivos aqui é municiar de conhecimento alguém que foi atraído pelo linux, por conta dessa plaquinha maravilhosa, que não quer executar simplesmente um conjunto de scripts sem saber o que está acontecendo "sob o capô".
 
 `Obs.: Existem vários scripts prontos, desenvolvidos por muita gente boa, que fazem todos esses passos de forma automática.`
 
@@ -10,13 +11,13 @@ Um vídeo com a demonstração e explicação de cada um dos pontos deste docume
 
 A comunidade em torno da BC-250 é extremamente unida e produtiva e alguns passos descritos aqui podem se tornar obsoletos muito rapidamente, portanto lembre-se sempre de consultar a página [AMD BC250 Documentation](https://elektricm.github.io/amd-bc250-docs/)
 
-Procedimentos atualizados para o dia `31/07/2026`
+Procedimentos correntes em `31/07/2026`
 
 # Premissas
-- Sistema Operacional: Linux CachyOS com KDE/Plasma
-- Sitemas de arquivos BTRFS
-- Limine como bootloader
-- Não é necessário ter atualizado a BIOS, mas não interfere se o tiver feito. A BIOS que libera 2 cores e 4 threads a mais é totalmente compatível com esses procedimentos.
+- Sistema Operacional: **Linux CachyOS com KDE/Plasma**
+- Sitemas de arquivos: **BTRFS**
+- Bootloader: **Limine**
+- Não é necessário ter atualizado a BIOS, mas não interfere se o tiver feito, além disso,  a BIOS que libera 2 cores e 4 threads a mais é totalmente compatível com esses procedimentos.
 - Instalação limpa do Linux CachyOS sem ter executado nenhum dos scripts automatizados
 - Usuário com privilégio de sudo
 
@@ -34,8 +35,8 @@ Procedimentos atualizados para o dia `31/07/2026`
 - [Habilitandos as 40 unidades computacionais](#habilitandos-as-40-unidades-computacionais)
 - [Configurando a VRAM](#configurando-a-vram)
 - [Omitindo a mensagem RDSEED no boot](#omitindo-a-mensagem-rdseed-no-boot)
-- [Configurando o Overclock/Undervolt da GPU](#configurando-o-overclock/undervolt-da-gpu)
-- [Configurando o Overclock/Undervolt da CPU](#configurando-o-overclock/undervolt-da-cpu)
+- [Overclock na GPU](#overclock-na-gpu)
+- [Overclock na CPU](#overclock-na-cpu)
 - [Convertendo a zram para zswap](#convertendo-a-zram-para-zswap)
 - [Habilitando entrada automática no modo gaming](#habilitando-entrada-automática-no-modo-gaming)
 
@@ -68,10 +69,11 @@ Alguns dos próximos passos necessitam da instalação de pré-requisitos, são 
 - **rocm-smi-lib** que habilita o btop ler as informações da GPU;
 - **stress** necessário para o procedimento de overclock/undervolt da CPU;
 - **umr** necessário para o script que libera as unidades computacionais (CUs) adicionais.
+- **python-pipx** será usado para configurar o overclock da CPU
 
 Podemos fazer tudo em uma linha de comando única:
 ```
-yay -S --noconfirm --needed rocm-smi-lib stress umr
+yay -S --noconfirm --needed rocm-smi-lib stress umr python-pipx
 ```
 
 `Obs: Não se usa o sudo antes do yay ou do paru - Como eles invocam o pacman, no momento certo a senha será solicitada.`
@@ -122,7 +124,7 @@ sudo limine-update
 Reinicie o CachyOS e após isso a CPU conseguirá ficar em 800 MHz quando em iddle.
 
 ## Habilitando as 40 unidades computacionais
-Assumindo que o umr já está instalado (vide tópico [Instalando as dependências/pré-requisitos](#instalando-as-dependências)) o procedimento para liberar as unidades computacionais adicionais é relativamente simples.
+Assumindo que o **umr** já está instalado (vide tópico [Instalando as dependências/pré-requisitos](#instalando-as-dependências)) o procedimento para liberar as unidades computacionais adicionais é relativamente simples.
 
 **Baixando o script que libera as unidade computacionais adicionais**
 ```
@@ -219,7 +221,7 @@ Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** p
 sudo limine-update
 ```
 
-## Configurando o Overclock/Undervolt da GPU
+## Overclock na GPU
 Por padrão a GPU da BC-250 opera em 1500 MHz constantes e isso não é eficiente em consumo, além de limitar o potencial dessa plaquinha tão maravilhosa.
 
 Essa operação padrão pode ser subvertida com a instalação do **Cyan Skillfish GPU Governor** habilitando frequências de 350 MHz até 2230 MHz e é esse o próximo passo da nossa jornada.
@@ -255,8 +257,37 @@ Com o tempo pode-se brincar com as frequências e voltagens, para isso recomendo
 
 [filippor/cyan-skillfish-governor](https://github.com/filippor/cyan-skillfish-governor)
 
+## Overclock na CPU
 
-## Configurando o Overclock/Undervolt da CPU
+A faixa de frequência padrão de operação da CPU depois de aplicado o fix do ACPI é de 800 MHz a 3500 MHz, mas é possível levá-la até 4000 MHz e fazer um undervolt o que resulta em um menor aquecimento quando em altas cargas.
+
+Para habilitar o overclock/unvervolt via SMU existe uma ferramenta chamada **bc250_smu_oc**
+
+A seguir temos os passos para configurar essas possibilidades.
+
+** Fazendo o download e ativando o bc250_smu_oc**
+```
+cd ~/bc250 && git clone https://github.com/bc250-collective/bc250_smu_oc.git && cd ~/bc250/bc250_smu_oc && pipx install . && chmod +x *.py
+```
+O comando acima faz o download da ferramenta com o comando **"git clone"**, vai para o diretório da mesma e ativa um ambiente python para rodar uma aplicão em modo isolado via **"pipx"**, após isso finaliza configurando o atributo de execução nos scripts python com o comando **"chmod"** e o parâmetro **"+x"**. Lembrar do encadeamento de comandos usando o **"&&"**
+
+**Testando a capacidade de overclock e undervolt da CPU**
+```
+sudo ./bc250_detect.py -f 3850 -v 1119 -t 89
+```
+Esse comando irá testar a frequência de 3850 MHz com 1119 mV, se tudo der certo ele vai concluir o teste com sucesso.
+
+Se o script der erro você pode tentar variar a frequência e a voltagem (variando aos poucos).
+
+O script terminando com sucesso ele gera um arquivo na mesma pasta chamado **overclock.conf** e está na hora de fixar esse parâmetros.
+
+**Tornando os resultados dos testes acima permanente**
+```
+sudo ./bc250_apply install overclock.conf && sudo systemctl enable --now bc250-smu-oc
+```
+O comando acima instala o serviço **bc250-smu-oc** e logo após o habilita.
+
+Obs.: Existe um parâmetro para o **bc250_detect.py** que é o **"--keep"** que após o script terminar os parâmetros do teste permanecem aplicados até o reboot.
 
 ## Convertendo a zram para zswap
 

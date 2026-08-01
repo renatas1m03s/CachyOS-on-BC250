@@ -101,7 +101,7 @@ Ex. um usuário de nome palmeiras teria o home igual a /home/palmeiras, nesse ca
 
 ### ATENÇÃO: Existem dois ACPI Fix - Um para BIOS com 8 cores e o outro para BIOS com 6 cores.
 
-**Fix para quando a BIOS estiver atualizada para habilitar os 8 cores**
+**Fix para a BIOS com 8 cores**
 ```
 git clone https://github.com/mendesrr/bc250-acpi-fix-updated-8c ~/bc250/acpi-fix
 ```

@@ -95,7 +95,9 @@ mkdir -pv ~/bc250/acpi-fix && cd ~/bc250
 ```
 Obs1.: O comando mkdir (abreviação para make directory) cria a pasta e o comando cd (abreviação de change directory) vai para a pasta criada, além disso o "&&" permite encadear mais de um comando e basicamente significa que quando terminar de executar o mkdir, se ele terminar com sucesso, executa o cd.
 
-Obs2.: No linux o \~ é um alias para o home do usuário. Ex. um usuário de nome palmeiras teria o home igual a /home/palmeiras, nesse caso "\~" = /home/palmeiras
+Obs2.: No linux o \~ é um alias para o home do usuário.
+
+Ex. um usuário de nome palmeiras teria o home igual a /home/palmeiras, nesse caso ~ = /home/palmeiras
 
 **Comando para baixar o fix do github** 
 
@@ -103,7 +105,7 @@ Obs2.: No linux o \~ é um alias para o home do usuário. Ex. um usuário de nom
 ```
 git clone https://github.com/mendesrr/bc250-acpi-fix-updated-8c ~/bc250/acpi-fix
 ```
-**Fix para a BIOS original ou autalizada, mas somente com 6 cores**
+**Fix para a BIOS original ou atualizada, mas somente com 6 cores**
 ```
 git clone https://github.com/bc250-collective/bc250-acpi-fix ~/bc250/acpi-fix
 ```
@@ -117,16 +119,15 @@ sudo nano /etc/mkinitcpio.conf
 ```
 localizar uma linha parecida com:
 
-**HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block filesystems fsck)**
+**HOOKS=(base systemd autodetect microcode kms modconf block keyboard sd-vconsole plymouth filesystems)**
 
 Observar que existem várias linhas parecidas com ela, mas somente uma sem o **"#"** na frente, essa é a que iremos modificar.
 
-Acrescentar o parâmetro **acpi_override** logo após o **fsck**, deixando a linha similar a:
+Acrescentar o parâmetro **acpi_override** ao final logo após **filesystems**
 
-**HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block filesystems fsck acpi_override)**
+**HOOKS=(base systemd autodetect microcode kms modconf block keyboard sd-vconsole plymouth filesystems acpi_override)**
 
 `Obs.: Os parâmetros contidos entre os parênteses podem variar de sistema para sistema, tome cuidado para a única alteração realizada ser o acréscimo do acpi_override.`
-
 
 Use a combinação de teclas **ctrl + s** para salvar o arquivo e **ctrl + x** para encerrar o editor nano.
 
@@ -356,6 +357,8 @@ sudo swapon /swap/swapfile
 echo "/swap/swapfile none swap defaults 0 0" | sudo tee -a /etc/fstab
 ```
 Reinicie o CachyOS e a troca para ZSWAP estará concluída
+
+[CachyOS Wiki - Mudar de ZRam para Zswap](https://wiki.cachyos.org/pt/configuration/general_system_tweaks/#mudar-de-zram-para-zswap)
 
 ## Conclusão
 A maior parte desses procedimentos é válida para o Arch Linux, bastando as premissas do Limine e do BTRFS estarem atendidas.

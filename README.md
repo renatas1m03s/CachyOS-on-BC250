@@ -59,7 +59,7 @@ Obs1.: pacman, paru e yay aceitam os mesmos parâmetros e opções. Dois que eu 
 
 Obs2.: Depois de instalar algum deles podemos usá-los no lugar do pacman.
 
-**Exemplo para atualizar o S.O. em vez de "sudo pacman -Syu --noconfirm", podemos usar**
+**Exemplo: Para atualizar o S.O. em vez de "sudo pacman -Syu --noconfirm", podemos usar**
 ```
 yay -Syu --noconfirm
 ```

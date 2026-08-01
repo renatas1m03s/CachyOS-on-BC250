@@ -1,7 +1,7 @@
 # Sobre
 Este documento tem como objetivo mostrar como ajustar ``MANUALMENTE`` uma instalação padrão do CachyOS para extrair o máximo de desempenho da placa AsRock BC-250.
 
-Um dos objetivos aqui é municiar de conhecimento alguém que foi atraído pelo linux, por conta dessa plaquinha maravilhosa, que não quer executar simplesmente um conjunto de scripts sem saber o que está acontecendo "sob o capô".
+Um dos objetivos aqui é municiar de conhecimento alguém que por conta dessa plaquinha maravilhosa, foi atraído pelo linux,  mas que não quer executar simplesmente um conjunto de scripts sem saber o que está acontecendo "sob o capô".
 
 `Obs.: Existem vários scripts prontos, desenvolvidos por muita gente boa, que fazem todos esses passos de forma automática.`
 

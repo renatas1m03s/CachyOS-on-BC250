@@ -5,7 +5,19 @@ Um dos objetivos aqui é municiar de conhecimento alguém que por conta dessa pl
 
 `Obs.: Existem vários scripts prontos, desenvolvidos por muita gente boa, que executam todos esses passos de forma automática.`
 
-Um vídeo com a demonstração e explicação de cada um dos pontos deste documento pode ser assistido nesse link [Setup MANUAL do CachyOS/Arch na BC-250](https://www.youtube.com/)
+Um vídeo com a demonstração e explicação de cada um dos pontos deste documento pode ser assistido nesse link [Setup MANUAL do Linux CachyOS/Arch na BC-250](https://www.youtube.com/watch?v=wMqUmxJdXNo)
+
+Capítulos do vídeo:
+[Premissas](https://youtu.be/wMqUmxJdXNo?si=e1XKdalXV8MXIv8e&t=398)
+[Recomendações básicas](https://youtu.be/wMqUmxJdXNo?si=14le6YOKBzC6raqX&t=516)
+[Instalando o yay ou o paru](https://youtu.be/wMqUmxJdXNo?si=y0CDuUUDy8yeEfvs&t=726)
+[Instalando os pré-requisito e dependências](https://youtu.be/wMqUmxJdXNo?si=ZstZabCPR_qHkd45&t=1130)
+[Instalando o ACPI Fix da BC-250](https://youtu.be/wMqUmxJdXNo?si=fr0NyevKKox8watC&t=1541)
+[Habilitando as 40 unidades computacionais (CUs)](https://youtu.be/wMqUmxJdXNo?si=FG6GdA2k9CpnKVec&t=2716)
+[Configurando a VRAM dinâmica](https://youtu.be/wMqUmxJdXNo?si=oYQXe3Kl5_4y_vV1&t=3213)
+[Configurando o overclock da GPU](https://youtu.be/wMqUmxJdXNo?si=RHcEwTcdupXLgu2c&t=3823)
+[Configurando o overclock da CPU](https://youtu.be/wMqUmxJdXNo?si=KFxx2_g2wZxQu4Y8&t=4327)
+[Convertendo ZRAM para ZSWAP](https://youtu.be/wMqUmxJdXNo?si=41uXkibmRpv-UIAO&t=4900)
 
 # Importante
 
@@ -32,7 +44,7 @@ Procedimentos correntes em `31/07/2026`
 - [Instalando o yay ou o paru](#instalando-o-yay-ou-o-paru)
 - [Instalando as dependências e pré-requisitos](#instalando-as-dependências-e-pré-requisitos)
 - [Instalando ACPI Fix](#instalando-o-acpi-fix)
-- [Habilitandos as 40 unidades computacionais](#habilitandos-as-40-unidades-computacionais)
+- [Habilitandos as 40 unidades computacionais](#habilitando-as-40-unidades-computacionais)
 - [Configurando a VRAM](#configurando-a-vram)
 - [Omitindo a mensagem RDSEED no boot](#omitindo-a-mensagem-rdseed-no-boot)
 - [Overclock na GPU](#overclock-na-gpu)

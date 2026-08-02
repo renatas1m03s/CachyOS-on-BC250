@@ -9,14 +9,23 @@ Um vídeo com a demonstração e explicação de cada um dos pontos deste docume
 
 Capítulos do vídeo:
 [Premissas](https://youtu.be/wMqUmxJdXNo?si=e1XKdalXV8MXIv8e&t=398)
+
 [Recomendações básicas](https://youtu.be/wMqUmxJdXNo?si=14le6YOKBzC6raqX&t=516)
+
 [Instalando o yay ou o paru](https://youtu.be/wMqUmxJdXNo?si=y0CDuUUDy8yeEfvs&t=726)
+
 [Instalando os pré-requisito e dependências](https://youtu.be/wMqUmxJdXNo?si=ZstZabCPR_qHkd45&t=1130)
+
 [Instalando o ACPI Fix da BC-250](https://youtu.be/wMqUmxJdXNo?si=fr0NyevKKox8watC&t=1541)
+
 [Habilitando as 40 unidades computacionais (CUs)](https://youtu.be/wMqUmxJdXNo?si=FG6GdA2k9CpnKVec&t=2716)
+
 [Configurando a VRAM dinâmica](https://youtu.be/wMqUmxJdXNo?si=oYQXe3Kl5_4y_vV1&t=3213)
+
 [Configurando o overclock da GPU](https://youtu.be/wMqUmxJdXNo?si=RHcEwTcdupXLgu2c&t=3823)
+
 [Configurando o overclock da CPU](https://youtu.be/wMqUmxJdXNo?si=KFxx2_g2wZxQu4Y8&t=4327)
+
 [Convertendo ZRAM para ZSWAP](https://youtu.be/wMqUmxJdXNo?si=41uXkibmRpv-UIAO&t=4900)
 
 # Importante
